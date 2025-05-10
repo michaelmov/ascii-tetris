@@ -55,13 +55,35 @@ export class Game {
       this.currentPos.row++;
     } else {
       this.board.mergePiece(this.currentPiece, this.currentPos.row, this.currentPos.col);
-      const cleared = this.board.clearLines();
-      if (cleared) {
-        this.score += cleared * 100;
-        this.lines += cleared;
-        this.level = 1 + Math.floor(this.lines / 10);
+      
+      // Find lines that are about to be cleared
+      const linesToClear = [];
+      for (let r = this.board.ROWS - 1; r >= 0; r--) {
+        if (this.board.board[r].every(cell => cell !== this.board.EMPTY)) {
+          linesToClear.push(r);
+        }
       }
-      this.spawnPiece();
+      
+      if (linesToClear.length > 0) {
+        this.renderer.setLinesToClear(linesToClear);
+        this.renderer.renderAll(this.getGameState());
+        
+        // Wait for the flash animation to complete before clearing the lines
+        setTimeout(() => {
+          const cleared = this.board.clearLines();
+          if (cleared) {
+            this.score += cleared * 100;
+            this.lines += cleared;
+            this.level = 1 + Math.floor(this.lines / 10);
+          }
+          this.renderer.setLinesToClear([]);
+          this.spawnPiece();
+          this.renderer.renderAll(this.getGameState());
+        }, 100);
+        return; // Skip the final renderAll call
+      } else {
+        this.spawnPiece();
+      }
     }
     
     this.renderer.renderAll(this.getGameState());
