@@ -1,0 +1,33 @@
+body {
+  background: #000;
+  color: #00FF00;
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#tetris-container {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+#game-board, #next-piece, #scoreboard, #instructions {
+  white-space: pre;
+  font-size: 20px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+#game-board {
+  margin-right: 20px;
+}
+
+#scoreboard {
+  margin-bottom: 20px;
+}

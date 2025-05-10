@@ -1,0 +1,115 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# ASCII Tetris Game Requirements
+
+## 🎮 Overview
+
+Implement a classic ASCII-style Tetris game inspired by the original Tetris experience. The game will run entirely in the browser using HTML, CSS, and vanilla JavaScript — no external libraries.
+
+---
+
+## 🖼️ Visual & Styling Requirements
+
+- **Style Reference**: Use a black background with green-colored elements (like a classic terminal aesthetic).
+- **Color Palette**:  
+  - Background: Black  
+  - Foreground (tetrominoes and text): Green `#00FF00`
+
+- **Character Design**: All pieces should use ASCII square brackets.
+  - **Square (O-piece)**:
+    ```
+    [ ][ ]
+    [ ][ ]
+    ```
+  - **I-piece (horizontal)**:
+    ```
+    [ ][ ][ ][ ]
+    ```
+  - **I-piece (vertical)**:
+    ```
+    [ ]
+    [ ]
+    [ ]
+    [ ]
+    ```
+  - **Z-piece**:
+    ```
+    [ ][ ]
+        [ ][ ]
+    ```
+  - **L-piece**:
+    ```
+    [ ]
+    [ ][ ][ ]
+    ```
+
+- **UI Requirements**:
+  - Render the game board in ASCII text.
+  - Include a preview box for the "next" piece (also in ASCII).
+  - Maintain a minimalist, retro terminal-style UI.
+
+---
+
+## 🕹️ Gameplay Requirements
+
+- **Controls**:
+  - `←` Arrow Left: Move piece left
+  - `→` Arrow Right: Move piece right
+  - `↑` Arrow Up: Rotate piece
+  - `SPACE`: Hard drop (immediately drop piece to the bottom)
+
+- **Game Logic**:
+  - Standard Tetris mechanics:
+    - Pieces fall at a timed interval.
+    - When a piece hits the bottom or another piece, it locks in place.
+    - Complete lines are cleared.
+    - Score should increment per line cleared.
+    - Game over when new piece cannot spawn.
+
+- **Rotation**:
+  - Simple clockwise rotation for rotatable pieces.
+
+- **Difficulty**:
+  - Optional: increase speed as score increases.
+
+---
+
+## 🧱 Technical Architecture
+
+- **HTML**:
+  - Base structure provided in `index.html`.
+  
+
+- **CSS**:
+  - Base styling provided in [style.css](mdc:style.css)
+  - You may create additional CSS files if needed, imported via `@import` in `index.html`.
+  - Must respect the black background and green ASCII aesthetic.
+  - No 3rd party css libraries should be used
+
+- **JavaScript**:
+  - Game logic should live in `main.js`.
+  - You may split code into additional JS modules and import them into the [main.js](mdc:main.js)
+  - Avoid any external 3rd party libraries — this should be a pure vanilla JS implementation.
+
+## ✅ Completion Criteria
+
+- Game can be played with keyboard as specified.
+- Pieces fall, rotate, and lock in.
+- Lines clear when filled and pieces above drop down.
+- Score is visible and updates.
+- Game ends appropriately.
+- No graphical UI — everything is rendered using ASCII characters.
+- All requirements in this document are implemented.
+
+---
+
+## 📦 Optional (Stretch Goals)
+
+- Implement soft drop (↓).
+- Store high scores in `localStorage`.
+- Add sound effects using vanilla audio API (optional toggle).
+- Add basic pause/resume functionality.
+- Store high scores in browser local storage.
