@@ -10,6 +10,28 @@ body {
   justify-content: center;
 }
 
+#start-screen {
+  text-align: center;
+  white-space: pre;
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+#title {
+  font-size: 36px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+#start-message {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 #tetris-container {
   display: flex;
   flex-direction: row;
@@ -22,6 +44,7 @@ body {
   font-size: 20px;
   line-height: 1.1;
   letter-spacing: 1px;
+  margin-bottom: 20px;
 }
 
 #game-board {

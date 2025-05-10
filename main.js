@@ -214,11 +214,28 @@ const renderer = new Renderer(
   document.getElementById('instructions')
 );
 
-// Create and start the game
+// Create the game instance
 const game = new Game(renderer);
+
+// Handle start screen
+let gameStarted = false;
+
+function startGame() {
+  if (!gameStarted) {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('tetris-container').style.display = 'flex';
+    gameStarted = true;
+    game.start();
+  }
+}
 
 // Handle keyboard input
 document.addEventListener('keydown', (e) => {
+  if (!gameStarted) {
+    startGame();
+    return;
+  }
+
   if (game.gameOver) return;
   
   if (e.key.toLowerCase() === 'p') {
@@ -251,6 +268,3 @@ document.addEventListener('keydown', (e) => {
       break;
   }
 });
-
-// Start the game
-game.start();
