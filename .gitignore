@@ -1,3 +1,6 @@
+# Dist
+dist/
+
 # Dependencies
 node_modules/
 

@@ -1,3 +1,6 @@
+import { Game } from './src/game/Game.js';
+import { Renderer } from './src/game/Renderer.js';
+
 // ASCII Tetris Game
 
 const ROWS = 20;
@@ -203,65 +206,51 @@ function rotatePiece() {
   }
 }
 
-function handleKey(e) {
-  if (gameOver) return;
+// Initialize the renderer with DOM elements
+const renderer = new Renderer(
+  document.getElementById('game-board'),
+  document.getElementById('next-piece'),
+  document.getElementById('scoreboard'),
+  document.getElementById('instructions')
+);
+
+// Create and start the game
+const game = new Game(renderer);
+
+// Handle keyboard input
+document.addEventListener('keydown', (e) => {
+  if (game.gameOver) return;
   
   if (e.key.toLowerCase() === 'p') {
-    isPaused = !isPaused;
-    renderAll();
+    game.togglePause();
     return;
   }
   
-  if (isPaused) return;
+  if (game.isPaused) return;
   
   switch (e.key) {
     case '7': // left
     case 'ArrowLeft':
-      move(-1);
+      game.move(-1);
       break;
     case '9': // right
     case 'ArrowRight':
-      move(1);
+      game.move(1);
       break;
     case '8': // rotate
     case 'ArrowUp':
-      rotatePiece();
+      game.rotatePiece();
       break;
     case '4': // soft drop
     case 'ArrowDown':
-      if (validMove(current.shape, pos.row + 1, pos.col)) {
-        pos.row++;
-        renderAll();
-      }
+      game.moveDown();
       break;
     case '5': // hard drop
     case ' ': // space
-      drop();
+      game.drop();
       break;
   }
-}
+});
 
-document.addEventListener('keydown', handleKey);
-
-function startGame() {
-  board = Array.from({ length: ROWS }, () => Array(COLS).fill(EMPTY));
-  score = 0;
-  lines = 0;
-  level = 1;
-  gameOver = false;
-  next = randomPiece();
-  spawnPiece();
-  renderAll();
-  loop();
-}
-
-function loop() {
-  if (!gameOver) {
-    setTimeout(() => {
-      tick();
-      loop();
-    }, Math.max(100, TICK_MS - (level - 1) * 40));
-  }
-}
-
-startGame();
+// Start the game
+game.start();
