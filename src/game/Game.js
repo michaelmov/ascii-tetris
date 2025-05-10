@@ -1,6 +1,5 @@
 import { Board } from './Board.js';
 import { Piece } from './Piece.js';
-import { Renderer } from './Renderer.js';
 
 export class Game {
   constructor(renderer) {

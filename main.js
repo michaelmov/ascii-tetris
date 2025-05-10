@@ -238,33 +238,36 @@ document.addEventListener('keydown', (e) => {
 
   if (game.gameOver) return;
   
-  if (e.key.toLowerCase() === 'p') {
-    game.togglePause();
-    return;
-  }
-  
-  if (game.isPaused) return;
-  
   switch (e.key) {
-    case '7': // left
     case 'ArrowLeft':
+    case '7':
       game.move(-1);
       break;
-    case '9': // right
     case 'ArrowRight':
+    case '9':
       game.move(1);
       break;
-    case '8': // rotate
     case 'ArrowUp':
+    case '8':
       game.rotatePiece();
       break;
-    case '4': // soft drop
     case 'ArrowDown':
+    case '4':
       game.moveDown();
       break;
-    case '5': // hard drop
-    case ' ': // space
+    case ' ':
+    case '5':
       game.drop();
+      break;
+    case 'p':
+    case 'P':
+      game.togglePause();
       break;
   }
 });
+
+// Start the game when the page loads
+window.onload = () => {
+  document.getElementById('start-screen').style.display = 'flex';
+  document.getElementById('tetris-container').style.display = 'none';
+};
