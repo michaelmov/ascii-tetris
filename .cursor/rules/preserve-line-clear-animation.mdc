@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: *.js
 alwaysApply: false
 ---
 # Line Clearing Animation Rule
