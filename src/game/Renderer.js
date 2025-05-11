@@ -83,6 +83,6 @@ export class Renderer {
   }
 
   renderInstructions() {
-    this.instructions.textContent = `INSTURCTIONS:\n7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE    R: RESTART`;
+    this.instructions.textContent = `INSTURCTIONS:\n7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP\n5/SPACE: HARD DROP\nP: PAUSE    R: RESTART`;
   }
 }
