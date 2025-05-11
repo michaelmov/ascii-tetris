@@ -1,12 +1,16 @@
+import { Game } from './Game';
+
 export class InputHandler {
-  constructor(game) {
+  private game: Game;
+
+  constructor(game: Game) {
     this.game = game;
     this.setupEventListeners();
   }
 
-  setupEventListeners() {
-    document.addEventListener('keydown', (e) => {
-      if (!this.game.isStarted) {
+  private setupEventListeners(): void {
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (!this.game.getIsStarted()) {
         this.game.start();
         return;
       }
@@ -18,7 +22,7 @@ export class InputHandler {
           return;
       }
 
-      if (this.game.gameState.gameOver) return;
+      if (this.game.getGameState().isGameOver()) return;
 
       switch (e.key) {
         case 'ArrowLeft':

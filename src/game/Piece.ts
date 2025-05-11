@@ -1,5 +1,9 @@
+interface PieceShape {
+  shape: number[][];
+}
+
 export class Piece {
-  static PIECES = [
+  private static readonly PIECES: PieceShape[] = [
     // O
     {
       shape: [
@@ -9,9 +13,7 @@ export class Piece {
     },
     // I
     {
-      shape: [
-        [1, 1, 1, 1],
-      ],
+      shape: [[1, 1, 1, 1]],
     },
     // Z
     {
@@ -37,27 +39,35 @@ export class Piece {
     },
   ];
 
-  constructor(shape = null) {
-    this.shape = shape ? JSON.parse(JSON.stringify(shape)) : this.getRandomPiece().shape;
+  private shape: number[][];
+
+  constructor(shape: number[][] | null = null) {
+    this.shape = shape
+      ? JSON.parse(JSON.stringify(shape))
+      : this.getRandomPiece().shape;
   }
 
-  getRandomPiece() {
+  private getRandomPiece(): PieceShape {
     const idx = Math.floor(Math.random() * Piece.PIECES.length);
     return JSON.parse(JSON.stringify(Piece.PIECES[idx]));
   }
 
-  rotate() {
+  public rotate(): void {
     // Clockwise rotation
-    this.shape = this.shape[0].map((_, i) => 
-      this.shape.map(row => row[i]).reverse()
+    this.shape = this.shape[0].map((_, i) =>
+      this.shape.map((row) => row[i]).reverse()
     );
   }
 
-  getWidth() {
+  public getWidth(): number {
     return this.shape[0].length;
   }
 
-  getHeight() {
+  public getHeight(): number {
     return this.shape.length;
   }
-} 
+
+  public getShape(): number[][] {
+    return this.shape;
+  }
+}
