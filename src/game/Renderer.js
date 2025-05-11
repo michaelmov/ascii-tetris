@@ -68,7 +68,7 @@ export class Renderer {
   }
 
   renderNext(piece) {
-    let out = 'Next:\n';
+    let out = 'NEXT:\n';
     for (let r = 0; r < piece.shape.length; r++) {
       for (let c = 0; c < piece.shape[0].length; c++) {
         out += piece.shape[r][c] ? '[ ]' : '   ';
@@ -83,6 +83,6 @@ export class Renderer {
   }
 
   renderInstructions() {
-    this.instructions.textContent = `7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE    R: RESTART`;
+    this.instructions.textContent = `INSTURCTIONS:\n7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE    R: RESTART`;
   }
 }
