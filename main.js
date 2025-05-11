@@ -1,5 +1,6 @@
 import { Game } from './src/game/Game.js';
 import { Renderer } from './src/game/Renderer.js';
+import { Piece } from './src/game/Piece.js';
 
 // ASCII Tetris Game
 
@@ -8,56 +9,13 @@ const COLS = 10;
 const EMPTY = 0;
 const TICK_MS = 500;
 
-const PIECES = [
-  // O
-  {
-    shape: [
-      [1, 1],
-      [1, 1],
-    ],
-  },
-  // I
-  {
-    shape: [
-      [1, 1, 1, 1],
-    ],
-  },
-  // Z
-  {
-    shape: [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-  },
-  // L
-  {
-    shape: [
-      [1, 0],
-      [1, 0],
-      [1, 1],
-    ],
-  },
-  // T
-  {
-    shape: [
-      [1, 1, 1],
-      [0, 1, 0],
-    ],
-  },
-];
-
 let board = Array.from({ length: ROWS }, () => Array(COLS).fill(EMPTY));
 let current, next, pos, score = 0, lines = 0, level = 1, gameOver = false, isPaused = false;
 
-function randomPiece() {
-  const idx = Math.floor(Math.random() * PIECES.length);
-  return JSON.parse(JSON.stringify(PIECES[idx]));
-}
-
 function spawnPiece() {
-  current = next || randomPiece();
-  next = randomPiece();
-  pos = { row: 0, col: Math.floor((COLS - current.shape[0].length) / 2) };
+  current = next || new Piece();
+  next = new Piece();
+  pos = { row: 0, col: Math.floor((COLS - current.getWidth()) / 2) };
   if (!validMove(current.shape, pos.row, pos.col)) {
     gameOver = true;
   }
@@ -199,11 +157,14 @@ function drop() {
 }
 
 function rotatePiece() {
-  const rotated = rotate(current.shape);
-  if (validMove(rotated, pos.row, pos.col)) {
-    current.shape = rotated;
-    renderAll();
+  current.rotate();
+  if (!validMove(current.shape, pos.row, pos.col)) {
+    // If rotation is invalid, rotate back
+    current.rotate();
+    current.rotate();
+    current.rotate();
   }
+  renderAll();
 }
 
 // Initialize the renderer with DOM elements
