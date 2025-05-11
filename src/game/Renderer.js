@@ -20,7 +20,6 @@ export class Renderer {
 
   renderBoard(board, current, position, gameState) {
     let out = '';
-    out += '<!'.padEnd(board.cols * 4 + 2, '-') + '!>\n';
 
     for (let r = 0; r < board.rows; r++) {
       out += '<!';
@@ -45,7 +44,7 @@ export class Renderer {
       out += '!>\n';
     }
 
-    out += '<!'.padEnd(board.cols * 4 + 2, '=') + '!>\n';
+    out += '<!'.padEnd(board.cols * 3 + 2, '=') + '!>\n';
 
     if (gameState.gameOver) {
       out += '\nGAME OVER!\nPress R to play again';

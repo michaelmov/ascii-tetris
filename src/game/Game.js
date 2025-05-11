@@ -5,7 +5,7 @@ import { Piece } from './Piece.js';
 
 export class Game {
   constructor(renderer) {
-    this.ROWS = 20;
+    this.ROWS = 25;
     this.COLS = 10;
     this.TICK_MS = 500;
 
