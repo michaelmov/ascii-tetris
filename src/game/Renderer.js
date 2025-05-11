@@ -5,13 +5,48 @@ export class Renderer {
     this.scoreboard = scoreboard;
     this.instructions = instructions;
     this.linesToClear = new Set();
+    this.animationFrameId = null;
   }
 
   setLinesToClear(lines) {
     this.linesToClear = new Set(lines);
+    if (lines.length > 0) {
+      this.startAnimation();
+    } else {
+      this.stopAnimation();
+    }
+  }
+
+  startAnimation() {
+    if (this.animationFrameId) return;
+
+    const animate = () => {
+      this.renderBoard(
+        this.currentBoard,
+        this.currentPiece,
+        this.currentPosition,
+        this.currentGameState
+      );
+      this.animationFrameId = requestAnimationFrame(animate);
+    };
+
+    this.animationFrameId = requestAnimationFrame(animate);
+  }
+
+  stopAnimation() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
   }
 
   render(board, current, next, position, gameState) {
+    // Store current state for animation
+    this.currentBoard = board;
+    this.currentPiece = current;
+    this.currentPosition = position;
+    this.currentGameState = gameState;
+
     this.renderBoard(board, current, position, gameState);
     this.renderNext(next);
     this.renderScore(gameState);
@@ -61,11 +96,13 @@ export class Renderer {
       const flashIndex = Math.floor(Date.now() / 50) % flashStates.length;
 
       this.linesToClear.forEach((row) => {
-        if (row >= 0 && row < lines.length - 3) {
-          const line = lines[row + 1];
+        // Convert board row to display row (accounting for the border)
+        const displayRow = row + 1;
+        if (displayRow >= 0 && displayRow < lines.length - 2) {
+          const line = lines[displayRow];
           if (line) {
             const flashLine = line.replace(/\[ \]/g, flashStates[flashIndex]);
-            lines[row + 1] = flashLine;
+            lines[displayRow] = flashLine;
           }
         }
       });

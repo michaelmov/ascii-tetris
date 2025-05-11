@@ -83,7 +83,7 @@ export class Game {
           this.renderer.setLinesToClear([]);
           this.spawnPiece();
           this.render();
-        }, 100);
+        }, 500);
         return; // Skip the final render call
       } else {
         this.spawnPiece();
