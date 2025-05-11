@@ -10,5 +10,6 @@ LEVEL: ${e.level}
 SCORE: ${e.score}`}renderInstructions(){this.instructions.textContent=`INSTURCTIONS:
 7/←: LEFT   9/→: RIGHT
 8/↑: ROTATE
-4/↓: SOFT DROP  5/SPACE: HARD DROP
+4/↓: SOFT DROP
+5/SPACE: HARD DROP
 P: PAUSE    R: RESTART`}}const E=new P(document.getElementById("game-board"),document.getElementById("next-piece"),document.getElementById("scoreboard"),document.getElementById("instructions"));new v(E);window.onload=()=>{document.getElementById("start-screen").style.display="flex",document.getElementById("tetris-container").style.display="none"};
