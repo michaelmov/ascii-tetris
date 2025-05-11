@@ -1,0 +1,30 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master # or 'main' if that's your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20 # Or your preferred version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        run: npm run deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
