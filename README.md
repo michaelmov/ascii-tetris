@@ -2,8 +2,10 @@
 
 A modern take on the classic Tetris game, implemented in ASCII art. This project is inspired by the original Tetris game created by Alexey Pajitnov in 1984, which has become one of the most iconic and beloved video games of all time.
 
+[Play now!](https://michaelmov.github.io/ascii-tetris/)
 
 This implementation is built using vanilla web technologies:
+
 - **HTML5** for the game structure
 - **CSS3** for styling and animations
 - **JavaScript** (ES6+) for game logic and mechanics
@@ -19,7 +21,6 @@ The game is designed to be lightweight and run smoothly in any modern web browse
 - Pause functionality
 - Game over detection
 
-
 ### Controls
 
 - Left Arrow: Move piece left
@@ -33,6 +34,7 @@ The game is designed to be lightweight and run smoothly in any modern web browse
 ## Building the Game
 
 To install dependencies:
+
 ```bash
 npm install
 ```
@@ -58,4 +60,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Original Tetris game created by Alexey Pajitnov in 1984
-- Inspired by the classic gameplay mechanics and timeless appeal of Tetris 
+- Inspired by the classic gameplay mechanics and timeless appeal of Tetris
