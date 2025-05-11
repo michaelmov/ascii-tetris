@@ -1,5 +1,5 @@
-import { Game } from './src/game/Game.js';
-import { Renderer } from './src/game/Renderer.js';
+import { Game } from './game/Game.js';
+import { Renderer } from './game/Renderer.js';
 
 // Initialize the renderer with DOM elements
 const renderer = new Renderer(

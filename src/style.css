@@ -1,6 +1,6 @@
 :root {
   --background-color: #000;
-  --text-color: #00FF00;
+  --text-color: #00ff00;
 }
 
 body {
@@ -36,8 +36,13 @@ body {
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 #tetris-container {
@@ -47,7 +52,10 @@ body {
   align-items: flex-start;
 }
 
-#game-board, #next-piece, #scoreboard, #instructions {
+#game-board,
+#next-piece,
+#scoreboard,
+#instructions {
   white-space: pre;
   font-size: 20px;
   line-height: 1.1;
