@@ -4,29 +4,31 @@ export class Renderer {
     this.nextPiece = nextPiece;
     this.scoreboard = scoreboard;
     this.instructions = instructions;
-    this.linesToClear = new Set();
   }
 
-  setLinesToClear(lines) {
-    this.linesToClear = new Set(lines);
+  render(board, current, next, position, gameState) {
+    this.renderBoard(board, current, position, gameState);
+    this.renderNext(next);
+    this.renderScore(gameState);
+    this.renderInstructions();
   }
 
-  renderBoard(board, currentPiece, currentPos, gameOver, isPaused) {
+  renderBoard(board, current, position, gameState) {
     let out = '';
-    out += '<!'.padEnd(board.COLS * 4 + 2, '-') + '!>\n';
+    out += '<!'.padEnd(board.cols * 4 + 2, '-') + '!>\n';
     
-    for (let r = 0; r < board.ROWS; r++) {
+    for (let r = 0; r < board.rows; r++) {
       out += '<!';
-      for (let c = 0; c < board.COLS; c++) {
-        let filled = board.getCell(r, c) !== board.EMPTY;
+      for (let c = 0; c < board.cols; c++) {
+        let filled = board.getCell(r, c) !== board.empty;
         
-        if (!gameOver && currentPiece) {
-          for (let pr = 0; pr < currentPiece.shape.length; pr++) {
-            for (let pc = 0; pc < currentPiece.shape[0].length; pc++) {
+        if (!gameState.gameOver && current) {
+          for (let pr = 0; pr < current.shape.length; pr++) {
+            for (let pc = 0; pc < current.shape[0].length; pc++) {
               if (
-                currentPiece.shape[pr][pc] &&
-                r === currentPos.row + pr &&
-                c === currentPos.col + pc
+                current.shape[pr][pc] &&
+                r === position.row + pr &&
+                c === position.col + pc
               ) {
                 filled = true;
               }
@@ -38,31 +40,16 @@ export class Renderer {
       out += '!>\n';
     }
     
-    out += '<!'.padEnd(board.COLS * 4 + 2, '=') + '!>\n';
-    out += 'V'.repeat(board.COLS * 2 + 2) + '\n';
+    out += '<!'.padEnd(board.cols * 4 + 2, '=') + '!>\n';
+    out += 'V'.repeat(board.cols * 2 + 2) + '\n';
     
-    if (gameOver) {
+    if (gameState.gameOver) {
       out += '\nGAME OVER!';
-    } else if (isPaused) {
+    } else if (gameState.isPaused) {
       out += '\nPAUSED';
     }
     
     this.gameBoard.textContent = out;
-    
-    // Apply flash animation to lines that are about to be cleared
-    if (this.linesToClear.size > 0) {
-      const lines = this.gameBoard.textContent.split('\n');
-      this.linesToClear.forEach(row => {
-        if (row >= 0 && row < lines.length - 3) { // -3 to account for border lines
-          const line = lines[row + 1]; // +1 to account for top border
-          if (line) {
-            const flashLine = line.replace(/\[ \]/g, '█ █');
-            lines[row + 1] = flashLine;
-          }
-        }
-      });
-      this.gameBoard.textContent = lines.join('\n');
-    }
   }
 
   renderNext(piece) {
@@ -76,26 +63,13 @@ export class Renderer {
     this.nextPiece.textContent = out;
   }
 
-  renderScore(score, lines, level) {
+  renderScore(gameState) {
     this.scoreboard.textContent =
-      `LINES CLEARED: ${lines}\nLEVEL: ${level}\nSCORE: ${score}`;
+      `LINES CLEARED: ${gameState.lines}\nLEVEL: ${gameState.level}\nSCORE: ${gameState.score}`;
   }
 
   renderInstructions() {
     this.instructions.textContent =
       `7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE`;
-  }
-
-  renderAll(gameState) {
-    this.renderBoard(
-      gameState.board,
-      gameState.currentPiece,
-      gameState.currentPos,
-      gameState.gameOver,
-      gameState.isPaused
-    );
-    this.renderNext(gameState.nextPiece);
-    this.renderScore(gameState.score, gameState.lines, gameState.level);
-    this.renderInstructions();
   }
 } 

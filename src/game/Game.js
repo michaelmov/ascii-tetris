@@ -1,140 +1,101 @@
 import { Board } from './Board.js';
+import { GameState } from './GameState.js';
+import { InputHandler } from './InputHandler.js';
 import { Piece } from './Piece.js';
 
 export class Game {
   constructor(renderer) {
+    this.ROWS = 20;
+    this.COLS = 10;
     this.TICK_MS = 500;
-    this.board = new Board();
+    
+    this.board = new Board(this.ROWS, this.COLS);
+    this.gameState = new GameState();
     this.renderer = renderer;
-    this.reset();
+    this.inputHandler = new InputHandler(this);
+    
+    this.current = null;
+    this.next = null;
+    this.position = null;
+    this.isStarted = false;
+    this.tickInterval = null;
   }
 
-  reset() {
-    this.board.reset();
-    this.score = 0;
-    this.lines = 0;
-    this.level = 1;
-    this.gameOver = false;
-    this.isPaused = false;
-    this.nextPiece = new Piece();
-    this.spawnPiece();
-    this.renderer.renderAll(this.getGameState());
-  }
-
-  getGameState() {
-    return {
-      board: this.board,
-      currentPiece: this.currentPiece,
-      currentPos: this.currentPos,
-      nextPiece: this.nextPiece,
-      score: this.score,
-      lines: this.lines,
-      level: this.level,
-      gameOver: this.gameOver,
-      isPaused: this.isPaused
-    };
+  start() {
+    if (!this.isStarted) {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('tetris-container').style.display = 'flex';
+      this.isStarted = true;
+      this.spawnPiece();
+      this.tickInterval = setInterval(() => this.tick(), this.TICK_MS);
+    }
   }
 
   spawnPiece() {
-    this.currentPiece = this.nextPiece;
-    this.nextPiece = new Piece();
-    this.currentPos = {
-      row: 0,
-      col: Math.floor((this.board.COLS - this.currentPiece.getWidth()) / 2)
+    this.current = this.next || new Piece();
+    this.next = new Piece();
+    this.position = { 
+      row: 0, 
+      col: Math.floor((this.COLS - this.current.getWidth()) / 2) 
     };
     
-    if (!this.board.isValidMove(this.currentPiece, this.currentPos.row, this.currentPos.col)) {
-      this.gameOver = true;
+    if (!this.board.isValidMove(this.current.shape, this.position.row, this.position.col)) {
+      this.gameState.setGameOver();
     }
   }
 
   tick() {
-    if (this.gameOver || this.isPaused) return;
+    if (this.gameState.gameOver || this.gameState.isPaused) return;
     
-    if (this.board.isValidMove(this.currentPiece, this.currentPos.row + 1, this.currentPos.col)) {
-      this.currentPos.row++;
+    if (this.board.isValidMove(this.current.shape, this.position.row + 1, this.position.col)) {
+      this.position.row++;
     } else {
-      this.board.mergePiece(this.currentPiece, this.currentPos.row, this.currentPos.col);
-      
-      // Find lines that are about to be cleared
-      const linesToClear = [];
-      for (let r = this.board.ROWS - 1; r >= 0; r--) {
-        if (this.board.board[r].every(cell => cell !== this.board.EMPTY)) {
-          linesToClear.push(r);
-        }
-      }
-      
-      if (linesToClear.length > 0) {
-        this.renderer.setLinesToClear(linesToClear);
-        this.renderer.renderAll(this.getGameState());
-        
-        // Wait for the flash animation to complete before clearing the lines
-        setTimeout(() => {
-          const cleared = this.board.clearLines();
-          if (cleared) {
-            this.score += cleared * 100;
-            this.lines += cleared;
-            this.level = 1 + Math.floor(this.lines / 10);
-          }
-          this.renderer.setLinesToClear([]);
-          this.spawnPiece();
-          this.renderer.renderAll(this.getGameState());
-        }, 100);
-        return; // Skip the final renderAll call
-      } else {
-        this.spawnPiece();
-      }
+      this.board.mergePiece(this.current, this.position);
+      const clearedLines = this.board.clearLines();
+      this.gameState.updateScore(clearedLines);
+      this.spawnPiece();
     }
-    
-    this.renderer.renderAll(this.getGameState());
+    this.render();
   }
 
   move(dx) {
-    if (this.board.isValidMove(this.currentPiece, this.currentPos.row, this.currentPos.col + dx)) {
-      this.currentPos.col += dx;
-      this.renderer.renderAll(this.getGameState());
+    if (this.board.isValidMove(this.current.shape, this.position.row, this.position.col + dx)) {
+      this.position.col += dx;
+      this.render();
     }
   }
 
   moveDown() {
-    if (this.board.isValidMove(this.currentPiece, this.currentPos.row + 1, this.currentPos.col)) {
-      this.currentPos.row++;
-      this.renderer.renderAll(this.getGameState());
+    if (this.board.isValidMove(this.current.shape, this.position.row + 1, this.position.col)) {
+      this.position.row++;
+      this.render();
     }
   }
 
   drop() {
-    while (this.board.isValidMove(this.currentPiece, this.currentPos.row + 1, this.currentPos.col)) {
-      this.currentPos.row++;
+    while (this.board.isValidMove(this.current.shape, this.position.row + 1, this.position.col)) {
+      this.position.row++;
     }
     this.tick();
   }
 
   rotatePiece() {
-    const rotated = new Piece(this.currentPiece.shape);
-    rotated.rotate();
-    if (this.board.isValidMove(rotated, this.currentPos.row, this.currentPos.col)) {
-      this.currentPiece = rotated;
-      this.renderer.renderAll(this.getGameState());
+    this.current.rotate();
+    if (!this.board.isValidMove(this.current.shape, this.position.row, this.position.col)) {
+      // If rotation is invalid, rotate back
+      this.current.rotate();
+      this.current.rotate();
+      this.current.rotate();
     }
+    this.render();
   }
 
   togglePause() {
-    this.isPaused = !this.isPaused;
-    this.renderer.renderAll(this.getGameState());
+    this.gameState.togglePause();
+    this.render();
   }
 
-  start() {
-    this.reset();
-    this.loop();
-  }
-
-  loop() {
-    if (!this.gameOver) {
-      setTimeout(() => {
-        this.tick();
-        this.loop();
-      }, Math.max(100, this.TICK_MS - (this.level - 1) * 40));
-    }
+  render() {
+    this.renderer.render(this.board, this.current, this.next, this.position, this.gameState);
   }
 } 

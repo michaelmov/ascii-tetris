@@ -1,25 +1,17 @@
 export class Board {
-  constructor(rows = 20, cols = 10) {
-    this.ROWS = rows;
-    this.COLS = cols;
-    this.EMPTY = 0;
-    this.board = this.createEmptyBoard();
+  constructor(rows, cols) {
+    this.rows = rows;
+    this.cols = cols;
+    this.empty = 0;
+    this.grid = Array.from({ length: rows }, () => Array(cols).fill(this.empty));
   }
 
-  createEmptyBoard() {
-    return Array.from({ length: this.ROWS }, () => Array(this.COLS).fill(this.EMPTY));
-  }
-
-  reset() {
-    this.board = this.createEmptyBoard();
-  }
-
-  isValidMove(piece, row, col) {
-    for (let r = 0; r < piece.shape.length; r++) {
-      for (let c = 0; c < piece.shape[0].length; c++) {
-        if (piece.shape[r][c]) {
+  isValidMove(shape, row, col) {
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[0].length; c++) {
+        if (shape[r][c]) {
           let nr = row + r, nc = col + c;
-          if (nr < 0 || nr >= this.ROWS || nc < 0 || nc >= this.COLS || this.board[nr][nc] !== this.EMPTY) {
+          if (nr < 0 || nr >= this.rows || nc < 0 || nc >= this.cols || this.grid[nr][nc] !== this.empty) {
             return false;
           }
         }
@@ -28,11 +20,11 @@ export class Board {
     return true;
   }
 
-  mergePiece(piece, row, col) {
+  mergePiece(piece, position) {
     for (let r = 0; r < piece.shape.length; r++) {
       for (let c = 0; c < piece.shape[0].length; c++) {
         if (piece.shape[r][c]) {
-          this.board[row + r][col + c] = 1;
+          this.grid[position.row + r][position.col + c] = 1;
         }
       }
     }
@@ -40,10 +32,10 @@ export class Board {
 
   clearLines() {
     let cleared = 0;
-    for (let r = this.ROWS - 1; r >= 0; r--) {
-      if (this.board[r].every(cell => cell !== this.EMPTY)) {
-        this.board.splice(r, 1);
-        this.board.unshift(Array(this.COLS).fill(this.EMPTY));
+    for (let r = this.rows - 1; r >= 0; r--) {
+      if (this.grid[r].every(cell => cell !== this.empty)) {
+        this.grid.splice(r, 1);
+        this.grid.unshift(Array(this.cols).fill(this.empty));
         cleared++;
         r++;
       }
@@ -51,7 +43,11 @@ export class Board {
     return cleared;
   }
 
+  reset() {
+    this.grid = Array.from({ length: this.rows }, () => Array(this.cols).fill(this.empty));
+  }
+
   getCell(row, col) {
-    return this.board[row][col];
+    return this.grid[row][col];
   }
 } 
