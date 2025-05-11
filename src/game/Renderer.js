@@ -4,6 +4,11 @@ export class Renderer {
     this.nextPiece = nextPiece;
     this.scoreboard = scoreboard;
     this.instructions = instructions;
+    this.linesToClear = new Set();
+  }
+
+  setLinesToClear(lines) {
+    this.linesToClear = new Set(lines);
   }
 
   render(board, current, next, position, gameState) {
@@ -16,12 +21,12 @@ export class Renderer {
   renderBoard(board, current, position, gameState) {
     let out = '';
     out += '<!'.padEnd(board.cols * 4 + 2, '-') + '!>\n';
-    
+
     for (let r = 0; r < board.rows; r++) {
       out += '<!';
       for (let c = 0; c < board.cols; c++) {
         let filled = board.getCell(r, c) !== board.empty;
-        
+
         if (!gameState.gameOver && current) {
           for (let pr = 0; pr < current.shape.length; pr++) {
             for (let pc = 0; pc < current.shape[0].length; pc++) {
@@ -39,17 +44,32 @@ export class Renderer {
       }
       out += '!>\n';
     }
-    
+
     out += '<!'.padEnd(board.cols * 4 + 2, '=') + '!>\n';
-    out += 'V'.repeat(board.cols * 2 + 2) + '\n';
-    
+
     if (gameState.gameOver) {
       out += '\nGAME OVER!';
     } else if (gameState.isPaused) {
       out += '\nPAUSED';
     }
-    
+
     this.gameBoard.textContent = out;
+
+    // Apply flash animation to lines that are about to be cleared
+    if (this.linesToClear.size > 0) {
+      const lines = this.gameBoard.textContent.split('\n');
+      this.linesToClear.forEach((row) => {
+        if (row >= 0 && row < lines.length - 3) {
+          // -3 to account for border lines
+          const line = lines[row + 1]; // +1 to account for top border
+          if (line) {
+            const flashLine = line.replace(/\[ \]/g, '█ █');
+            lines[row + 1] = flashLine;
+          }
+        }
+      });
+      this.gameBoard.textContent = lines.join('\n');
+    }
   }
 
   renderNext(piece) {
@@ -64,12 +84,10 @@ export class Renderer {
   }
 
   renderScore(gameState) {
-    this.scoreboard.textContent =
-      `LINES CLEARED: ${gameState.lines}\nLEVEL: ${gameState.level}\nSCORE: ${gameState.score}`;
+    this.scoreboard.textContent = `LINES CLEARED: ${gameState.lines}\nLEVEL: ${gameState.level}\nSCORE: ${gameState.score}`;
   }
 
   renderInstructions() {
-    this.instructions.textContent =
-      `7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE`;
+    this.instructions.textContent = `7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE`;
   }
-} 
+}

@@ -8,12 +8,12 @@ export class Game {
     this.ROWS = 20;
     this.COLS = 10;
     this.TICK_MS = 500;
-    
+
     this.board = new Board(this.ROWS, this.COLS);
     this.gameState = new GameState();
     this.renderer = renderer;
     this.inputHandler = new InputHandler(this);
-    
+
     this.current = null;
     this.next = null;
     this.position = null;
@@ -34,46 +34,98 @@ export class Game {
   spawnPiece() {
     this.current = this.next || new Piece();
     this.next = new Piece();
-    this.position = { 
-      row: 0, 
-      col: Math.floor((this.COLS - this.current.getWidth()) / 2) 
+    this.position = {
+      row: 0,
+      col: Math.floor((this.COLS - this.current.getWidth()) / 2),
     };
-    
-    if (!this.board.isValidMove(this.current.shape, this.position.row, this.position.col)) {
+
+    if (
+      !this.board.isValidMove(
+        this.current.shape,
+        this.position.row,
+        this.position.col
+      )
+    ) {
       this.gameState.setGameOver();
     }
   }
 
   tick() {
     if (this.gameState.gameOver || this.gameState.isPaused) return;
-    
-    if (this.board.isValidMove(this.current.shape, this.position.row + 1, this.position.col)) {
+
+    if (
+      this.board.isValidMove(
+        this.current.shape,
+        this.position.row + 1,
+        this.position.col
+      )
+    ) {
       this.position.row++;
     } else {
       this.board.mergePiece(this.current, this.position);
-      const clearedLines = this.board.clearLines();
-      this.gameState.updateScore(clearedLines);
-      this.spawnPiece();
+
+      // Find lines that are about to be cleared
+      const linesToClear = [];
+      for (let r = this.ROWS - 1; r >= 0; r--) {
+        if (this.board.grid[r].every((cell) => cell !== this.board.empty)) {
+          linesToClear.push(r);
+        }
+      }
+
+      if (linesToClear.length > 0) {
+        this.renderer.setLinesToClear(linesToClear);
+        this.render();
+
+        // Wait for the flash animation to complete before clearing the lines
+        setTimeout(() => {
+          const clearedLines = this.board.clearLines();
+          this.gameState.updateScore(clearedLines);
+          this.renderer.setLinesToClear([]);
+          this.spawnPiece();
+          this.render();
+        }, 100);
+        return; // Skip the final render call
+      } else {
+        this.spawnPiece();
+      }
     }
     this.render();
   }
 
   move(dx) {
-    if (this.board.isValidMove(this.current.shape, this.position.row, this.position.col + dx)) {
+    if (
+      this.board.isValidMove(
+        this.current.shape,
+        this.position.row,
+        this.position.col + dx
+      )
+    ) {
       this.position.col += dx;
       this.render();
     }
   }
 
   moveDown() {
-    if (this.board.isValidMove(this.current.shape, this.position.row + 1, this.position.col)) {
+    if (
+      this.board.isValidMove(
+        this.current.shape,
+        this.position.row + 1,
+        this.position.col
+      )
+    ) {
       this.position.row++;
       this.render();
     }
   }
 
   drop() {
-    while (this.board.isValidMove(this.current.shape, this.position.row + 1, this.position.col)) {
+    while (
+      this.board.isValidMove(
+        this.current.shape,
+        this.position.row + 1,
+        this.position.col
+      )
+    ) {
       this.position.row++;
     }
     this.tick();
@@ -81,7 +133,13 @@ export class Game {
 
   rotatePiece() {
     this.current.rotate();
-    if (!this.board.isValidMove(this.current.shape, this.position.row, this.position.col)) {
+    if (
+      !this.board.isValidMove(
+        this.current.shape,
+        this.position.row,
+        this.position.col
+      )
+    ) {
       // If rotation is invalid, rotate back
       this.current.rotate();
       this.current.rotate();
@@ -96,6 +154,12 @@ export class Game {
   }
 
   render() {
-    this.renderer.render(this.board, this.current, this.next, this.position, this.gameState);
+    this.renderer.render(
+      this.board,
+      this.current,
+      this.next,
+      this.position,
+      this.gameState
+    );
   }
-} 
+}
