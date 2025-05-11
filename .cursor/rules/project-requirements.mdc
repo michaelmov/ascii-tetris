@@ -93,6 +93,12 @@ Implement a classic ASCII-style Tetris game inspired by the original Tetris expe
   - Game logic should live in `main.js`.
   - You may split code into additional JS modules and import them into the [main.js](mdc:main.js)
   - Avoid any external 3rd party libraries — this should be a pure vanilla JS implementation.
+  - The line clearing flash animation must be preserved and enhanced:
+    - Must use ASCII block characters (█, ▓, ▒, ░) for the animation
+    - Must cycle through different block characters for a gradient effect
+    - Must update at least 10 times per second (100ms or faster)
+    - Must be visible for the entire duration of line clearing
+    - Must maintain the ASCII aesthetic of the game
 
 ## ✅ Completion Criteria
 

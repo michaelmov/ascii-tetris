@@ -54,15 +54,17 @@ export class Renderer {
 
     this.gameBoard.textContent = out;
 
-    // Apply flash animation to lines that are about to be cleared
+    // Apply enhanced flash animation to lines that are about to be cleared
     if (this.linesToClear.size > 0) {
       const lines = this.gameBoard.textContent.split('\n');
+      const flashStates = ['█ █', '▓ ▓', '▒ ▒', '░ ░'];
+      const flashIndex = Math.floor(Date.now() / 50) % flashStates.length;
+
       this.linesToClear.forEach((row) => {
         if (row >= 0 && row < lines.length - 3) {
-          // -3 to account for border lines
-          const line = lines[row + 1]; // +1 to account for top border
+          const line = lines[row + 1];
           if (line) {
-            const flashLine = line.replace(/\[ \]/g, '█ █');
+            const flashLine = line.replace(/\[ \]/g, flashStates[flashIndex]);
             lines[row + 1] = flashLine;
           }
         }
