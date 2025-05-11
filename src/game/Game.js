@@ -73,18 +73,19 @@ export class Game {
       }
 
       if (linesToClear.length > 0) {
+        // Start the animation
         this.renderer.setLinesToClear(linesToClear);
         this.render();
 
-        // Wait for the flash animation to complete before clearing the lines
+        // Wait for animation to complete before clearing
         setTimeout(() => {
           const clearedLines = this.board.clearLines();
           this.gameState.updateScore(clearedLines);
           this.renderer.setLinesToClear([]);
           this.spawnPiece();
           this.render();
-        }, 500);
-        return; // Skip the final render call
+        }, 300);
+        return;
       } else {
         this.spawnPiece();
       }

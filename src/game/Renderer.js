@@ -5,48 +5,13 @@ export class Renderer {
     this.scoreboard = scoreboard;
     this.instructions = instructions;
     this.linesToClear = new Set();
-    this.animationFrameId = null;
   }
 
   setLinesToClear(lines) {
     this.linesToClear = new Set(lines);
-    if (lines.length > 0) {
-      this.startAnimation();
-    } else {
-      this.stopAnimation();
-    }
-  }
-
-  startAnimation() {
-    if (this.animationFrameId) return;
-
-    const animate = () => {
-      this.renderBoard(
-        this.currentBoard,
-        this.currentPiece,
-        this.currentPosition,
-        this.currentGameState
-      );
-      this.animationFrameId = requestAnimationFrame(animate);
-    };
-
-    this.animationFrameId = requestAnimationFrame(animate);
-  }
-
-  stopAnimation() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
   }
 
   render(board, current, next, position, gameState) {
-    // Store current state for animation
-    this.currentBoard = board;
-    this.currentPiece = current;
-    this.currentPosition = position;
-    this.currentGameState = gameState;
-
     this.renderBoard(board, current, position, gameState);
     this.renderNext(next);
     this.renderScore(gameState);
@@ -60,6 +25,7 @@ export class Renderer {
       out += '<!';
       for (let c = 0; c < board.cols; c++) {
         let filled = board.getCell(r, c) !== board.empty;
+        let isAnimating = this.linesToClear.has(r);
 
         if (!gameState.gameOver && current) {
           for (let pr = 0; pr < current.shape.length; pr++) {
@@ -74,7 +40,18 @@ export class Renderer {
             }
           }
         }
-        out += filled ? '[ ]' : ' . ';
+
+        if (filled) {
+          if (isAnimating) {
+            const flashStates = ['█', '▓', '▒', '░'];
+            const flashIndex = Math.floor(Date.now() / 50) % flashStates.length;
+            out += `[${flashStates[flashIndex]}]`;
+          } else {
+            out += '[ ]';
+          }
+        } else {
+          out += ' . ';
+        }
       }
       out += '!>\n';
     }
@@ -88,26 +65,6 @@ export class Renderer {
     }
 
     this.gameBoard.textContent = out;
-
-    // Apply enhanced flash animation to lines that are about to be cleared
-    if (this.linesToClear.size > 0) {
-      const lines = this.gameBoard.textContent.split('\n');
-      const flashStates = ['█ █', '▓ ▓', '▒ ▒', '░ ░'];
-      const flashIndex = Math.floor(Date.now() / 50) % flashStates.length;
-
-      this.linesToClear.forEach((row) => {
-        // Convert board row to display row (accounting for the border)
-        const displayRow = row + 1;
-        if (displayRow >= 0 && displayRow < lines.length - 2) {
-          const line = lines[displayRow];
-          if (line) {
-            const flashLine = line.replace(/\[ \]/g, flashStates[flashIndex]);
-            lines[displayRow] = flashLine;
-          }
-        }
-      });
-      this.gameBoard.textContent = lines.join('\n');
-    }
   }
 
   renderNext(piece) {
