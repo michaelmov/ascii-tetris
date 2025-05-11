@@ -11,8 +11,15 @@ export class InputHandler {
         return;
       }
 
+      switch (e.key) {
+        case 'r':
+        case 'R':
+          this.game.restart();
+          return;
+      }
+
       if (this.game.gameState.gameOver) return;
-      
+
       switch (e.key) {
         case 'ArrowLeft':
         case '7':
@@ -41,4 +48,4 @@ export class InputHandler {
       }
     });
   }
-} 
+}

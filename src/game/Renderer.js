@@ -48,7 +48,7 @@ export class Renderer {
     out += '<!'.padEnd(board.cols * 4 + 2, '=') + '!>\n';
 
     if (gameState.gameOver) {
-      out += '\nGAME OVER!';
+      out += '\nGAME OVER!\nPress R to play again';
     } else if (gameState.isPaused) {
       out += '\nPAUSED';
     }
@@ -88,6 +88,6 @@ export class Renderer {
   }
 
   renderInstructions() {
-    this.instructions.textContent = `7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE`;
+    this.instructions.textContent = `7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP  5/SPACE: HARD DROP\nP: PAUSE    R: RESTART`;
   }
 }

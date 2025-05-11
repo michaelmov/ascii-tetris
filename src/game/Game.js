@@ -153,6 +153,23 @@ export class Game {
     this.render();
   }
 
+  restart() {
+    // Clear existing interval
+    if (this.tickInterval) {
+      clearInterval(this.tickInterval);
+    }
+
+    this.gameState.reset();
+    this.board.reset();
+    this.current = null;
+    this.next = null;
+    this.position = null;
+    this.spawnPiece();
+    // Start new interval
+    this.tickInterval = setInterval(() => this.tick(), this.TICK_MS);
+    this.render();
+  }
+
   render() {
     this.renderer.render(
       this.board,
