@@ -1,3 +1,4 @@
+import './style.css';
 import { Game } from './game/Game';
 import { Renderer } from './game/Renderer';
 
@@ -20,5 +21,12 @@ window.onload = (): void => {
   if (startScreen && tetrisContainer) {
     startScreen.style.display = 'flex';
     tetrisContainer.style.display = 'none';
+
+    // Start game when clicking anywhere on the start screen
+    startScreen.addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      tetrisContainer.style.display = 'block';
+      game.start();
+    });
   }
 };

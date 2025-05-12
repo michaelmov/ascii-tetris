@@ -15,6 +15,9 @@ export default defineConfig({
     open: true,
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.css'],
+  },
+  css: {
+    devSourcemap: true,
   },
 });
