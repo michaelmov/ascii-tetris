@@ -4,15 +4,12 @@ export class InputHandler {
   private game: Game;
   private touchStartX: number | null;
   private touchStartY: number | null;
-  private lastTapTime: number;
   private readonly SWIPE_THRESHOLD = 50;
-  private readonly DOUBLE_TAP_DELAY = 300;
 
   constructor(game: Game) {
     this.game = game;
     this.touchStartX = null;
     this.touchStartY = null;
-    this.lastTapTime = 0;
     this.setupEventListeners();
   }
 
@@ -68,14 +65,7 @@ export class InputHandler {
 
       this.touchStartX = e.touches[0].clientX;
       this.touchStartY = e.touches[0].clientY;
-
-      const now = Date.now();
-      if (now - this.lastTapTime < this.DOUBLE_TAP_DELAY) {
-        // Double tap detected - drop piece
-        this.game.drop();
-        e.preventDefault();
-      }
-      this.lastTapTime = now;
+      e.preventDefault();
     });
 
     document.addEventListener('touchend', (e: TouchEvent) => {
@@ -112,7 +102,9 @@ export class InputHandler {
         } else {
           // Vertical swipe
           if (deltaY > 0) {
-            this.game.drop(); // Down
+            this.game.moveDown(); // Soft drop
+          } else {
+            this.game.drop(); // Hard drop on upward swipe
           }
         }
       }
