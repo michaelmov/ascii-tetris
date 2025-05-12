@@ -26,12 +26,15 @@ window.onload = (): void => {
   let gameStarted = false;
 
   // Prevent double tap zoom
-  document.addEventListener('touchstart', preventDoubleTapZoom, {
-    passive: false,
-  });
-  document.addEventListener('touchend', preventDoubleTapZoom, {
-    passive: false,
-  });
+  document.addEventListener(
+    'touchstart',
+    (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    },
+    { passive: false }
+  );
 
   if (startScreen && tetrisContainer) {
     startScreen.style.display = 'flex';

@@ -54,70 +54,126 @@ export class InputHandler {
         case 'p':
         case 'P':
           this.game.togglePause();
+          this.updatePauseButtonText();
           break;
       }
     });
 
+    // Pause button click handler
+    const pauseButton = document.getElementById('pause-button');
+    if (pauseButton) {
+      const handlePause = () => {
+        if (
+          this.game.getIsStarted() &&
+          !this.game.getGameState().isGameOver()
+        ) {
+          this.game.togglePause();
+          this.updatePauseButtonText();
+        }
+      };
+
+      // Add both click and touchend listeners
+      pauseButton.addEventListener('click', handlePause);
+      pauseButton.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent the click event from firing
+        handlePause();
+      });
+    }
+
     // Touch controls
-    document.addEventListener('touchstart', (e: TouchEvent) => {
-      if (!this.game.getIsStarted() || this.game.getGameState().isGameOver())
-        return;
+    document.addEventListener(
+      'touchstart',
+      (e: TouchEvent) => {
+        if (!this.game.getIsStarted() || this.game.getGameState().isGameOver())
+          return;
 
-      this.touchStartX = e.touches[0].clientX;
-      this.touchStartY = e.touches[0].clientY;
-      e.preventDefault();
-    });
+        this.touchStartX = e.touches[0].clientX;
+        this.touchStartY = e.touches[0].clientY;
+      },
+      { passive: true }
+    );
 
-    document.addEventListener('touchend', (e: TouchEvent) => {
-      if (
-        !this.game.getIsStarted() ||
-        !this.touchStartX ||
-        !this.touchStartY ||
-        this.game.getGameState().isGameOver()
-      )
-        return;
+    document.addEventListener(
+      'touchend',
+      (e: TouchEvent) => {
+        if (
+          !this.game.getIsStarted() ||
+          !this.touchStartX ||
+          !this.touchStartY ||
+          this.game.getGameState().isGameOver()
+        )
+          return;
 
-      const touchEndX = e.changedTouches[0].clientX;
-      const touchEndY = e.changedTouches[0].clientY;
-
-      const deltaX = touchEndX - this.touchStartX;
-      const deltaY = touchEndY - this.touchStartY;
-
-      // Determine if it's a swipe or a tap
-      if (
-        Math.abs(deltaX) < this.SWIPE_THRESHOLD &&
-        Math.abs(deltaY) < this.SWIPE_THRESHOLD
-      ) {
-        // Tap - rotate piece
-        this.game.rotatePiece();
-      } else {
-        // Handle swipes
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-          // Horizontal swipe
-          if (deltaX > 0) {
-            this.game.move(1); // Right
-          } else {
-            this.game.move(-1); // Left
-          }
-        } else {
-          // Vertical swipe
-          if (deltaY > 0) {
-            this.game.drop(); // Hard drop on downward swipe
-          } else {
-            this.game.moveDown(); // Soft drop on upward swipe
+        // Check if the tap was on the pause button
+        const pauseButton = document.getElementById('pause-button');
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        if (pauseButton) {
+          const rect = pauseButton.getBoundingClientRect();
+          if (
+            touchEndX >= rect.left &&
+            touchEndX <= rect.right &&
+            touchEndY >= rect.top &&
+            touchEndY <= rect.bottom
+          ) {
+            // Tap was on pause button, don't rotate
+            this.touchStartX = null;
+            this.touchStartY = null;
+            return;
           }
         }
-      }
 
-      this.touchStartX = null;
-      this.touchStartY = null;
-      e.preventDefault();
-    });
+        const deltaX = touchEndX - this.touchStartX;
+        const deltaY = touchEndY - this.touchStartY;
 
-    document.addEventListener('touchmove', (e: TouchEvent) => {
-      if (!this.game.getIsStarted() || this.game.getGameState().isGameOver())
-        return;
-      e.preventDefault();
-    });
+        // Determine if it's a swipe or a tap
+        if (
+          Math.abs(deltaX) < this.SWIPE_THRESHOLD &&
+          Math.abs(deltaY) < this.SWIPE_THRESHOLD
+        ) {
+          // Tap - rotate piece
+          this.game.rotatePiece();
+        } else {
+          // Handle swipes
+          if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal swipe
+            if (deltaX > 0) {
+              this.game.move(1); // Right
+            } else {
+              this.game.move(-1); // Left
+            }
+          } else {
+            // Vertical swipe
+            if (deltaY > 0) {
+              this.game.drop(); // Hard drop on downward swipe
+            } else {
+              this.game.moveDown(); // Soft drop on upward swipe
+            }
+          }
+        }
+
+        this.touchStartX = null;
+        this.touchStartY = null;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      'touchmove',
+      (e: TouchEvent) => {
+        if (!this.game.getIsStarted() || this.game.getGameState().isGameOver())
+          return;
+      },
+      { passive: true }
+    );
+  }
+
+  private updatePauseButtonText(): void {
+    const pauseButton = document.getElementById('pause-button');
+    if (pauseButton) {
+      pauseButton.textContent = this.game.getGameState().getIsPaused()
+        ? 'RESUME'
+        : 'PAUSE';
+    }
   }
 }
