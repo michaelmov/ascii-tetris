@@ -102,9 +102,9 @@ export class InputHandler {
         } else {
           // Vertical swipe
           if (deltaY > 0) {
-            this.game.moveDown(); // Soft drop
+            this.game.drop(); // Hard drop on downward swipe
           } else {
-            this.game.drop(); // Hard drop on upward swipe
+            this.game.moveDown(); // Soft drop on upward swipe
           }
         }
       }
