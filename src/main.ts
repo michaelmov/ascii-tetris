@@ -17,16 +17,20 @@ const game = new Game(renderer);
 window.onload = (): void => {
   const startScreen = document.getElementById('start-screen');
   const tetrisContainer = document.getElementById('tetris-container');
+  let gameStarted = false;
 
   if (startScreen && tetrisContainer) {
     startScreen.style.display = 'flex';
     tetrisContainer.style.display = 'none';
 
-    // Start game when clicking anywhere on the start screen
-    startScreen.addEventListener('click', () => {
-      startScreen.style.display = 'none';
-      tetrisContainer.style.display = 'block';
-      game.start();
+    // Start game when clicking/tapping anywhere on the document
+    document.body.addEventListener('click', () => {
+      if (!gameStarted) {
+        gameStarted = true;
+        startScreen.style.display = 'none';
+        tetrisContainer.style.display = 'flex';
+        game.start();
+      }
     });
   }
 };
