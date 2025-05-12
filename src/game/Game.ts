@@ -74,6 +74,7 @@ export class Game {
       )
     ) {
       this.gameState.setGameOver();
+      this.inputHandler.updatePauseButtonText();
     }
   }
 

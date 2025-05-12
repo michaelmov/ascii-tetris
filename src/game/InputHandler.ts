@@ -62,21 +62,11 @@ export class InputHandler {
     // Pause button click handler
     const pauseButton = document.getElementById('pause-button');
     if (pauseButton) {
-      const handlePause = () => {
-        if (
-          this.game.getIsStarted() &&
-          !this.game.getGameState().isGameOver()
-        ) {
-          this.game.togglePause();
-          this.updatePauseButtonText();
-        }
-      };
-
       // Add both click and touchend listeners
-      pauseButton.addEventListener('click', handlePause);
+      pauseButton.addEventListener('click', () => this.handleButtonClick());
       pauseButton.addEventListener('touchend', (e) => {
         e.preventDefault(); // Prevent the click event from firing
-        handlePause();
+        this.handleButtonClick();
       });
     }
 
@@ -168,12 +158,28 @@ export class InputHandler {
     );
   }
 
-  private updatePauseButtonText(): void {
+  public updatePauseButtonText(): void {
     const pauseButton = document.getElementById('pause-button');
     if (pauseButton) {
-      pauseButton.textContent = this.game.getGameState().getIsPaused()
-        ? 'RESUME'
-        : 'PAUSE';
+      if (this.game.getGameState().isGameOver()) {
+        pauseButton.textContent = 'RESTART';
+      } else {
+        pauseButton.textContent = this.game.getGameState().getIsPaused()
+          ? 'RESUME'
+          : 'PAUSE';
+      }
     }
+  }
+
+  private handleButtonClick(): void {
+    if (this.game.getGameState().isGameOver()) {
+      this.game.restart();
+    } else if (
+      this.game.getIsStarted() &&
+      !this.game.getGameState().isGameOver()
+    ) {
+      this.game.togglePause();
+    }
+    this.updatePauseButtonText();
   }
 }
