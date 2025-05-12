@@ -12,5 +12,5 @@ SCORE: ${t.getScore()}`}renderInstructions(){this.instructions.textContent=`INST
 8/↑: ROTATE
 4/↓: SOFT DROP
 5/SPACE: HARD DROP
-P: PAUSE    R: RESTART`}}const P=new E(document.getElementById("game-board"),document.getElementById("next-piece"),document.getElementById("scoreboard"),document.getElementById("instructions")),O=new y(P);window.onload=()=>{const a=document.getElementById("start-screen"),t=document.getElementById("tetris-container");a&&t&&(a.style.display="flex",t.style.display="none",a.addEventListener("click",()=>{a.style.display="none",t.style.display="block",O.start()}))};
-//# sourceMappingURL=index-WluJI-dJ.js.map
+P: PAUSE    R: RESTART`}}const P=new E(document.getElementById("game-board"),document.getElementById("next-piece"),document.getElementById("scoreboard"),document.getElementById("instructions")),O=new y(P);window.onload=()=>{const a=document.getElementById("start-screen"),t=document.getElementById("tetris-container");let e=!1;a&&t&&(a.style.display="flex",t.style.display="none",document.body.addEventListener("click",()=>{e||(e=!0,a.style.display="none",t.style.display="flex",O.start())}))};
+//# sourceMappingURL=index-De36l5O7.js.map
