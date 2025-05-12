@@ -88,6 +88,10 @@ body {
   margin-bottom: 20px;
 }
 
+.mobile-only {
+  display: none;
+}
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   body {
@@ -148,16 +152,16 @@ body {
     display: none;
   }
 
-  .mobile-only {
-    display: none;
-  }
-
   #mobile-top-container {
     display: flex;
     justify-content: space-between;
     width: 100%;
     margin-bottom: 10px;
     padding: 0;
+  }
+
+  .mobile-only {
+    display: block;
   }
 }
 
@@ -182,7 +186,4 @@ body {
 }
 
 @media (max-width: 768px) {
-  .mobile-only {
-    display: block;
-  }
 }
