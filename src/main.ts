@@ -13,11 +13,6 @@ const renderer = new Renderer(
 // Create the game instance
 const game = new Game(renderer);
 
-// Prevent double tap zoom on mobile
-const preventDoubleTapZoom = (event: Event) => {
-  event.preventDefault();
-  event.stopPropagation();
-};
 
 // Start the game when the page loads
 window.onload = (): void => {
