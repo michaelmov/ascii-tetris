@@ -69,6 +69,7 @@ body {
   align-items: flex-start;
 }
 
+/* TODO: convert ids to classes for styling */
 #game-board,
 #next-piece,
 #scoreboard,
