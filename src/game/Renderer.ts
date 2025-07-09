@@ -7,23 +7,36 @@ interface Position {
   col: number;
 }
 
+enum GameMessage {
+  NONE = '',
+  PAUSED = 'PAUSED',
+  GAME_OVER = 'GAME OVER!\n\nPress R to play again',
+  // Future messages can be easily added here:
+  // LEVEL_UP = 'LEVEL UP!',
+  // TETRIS = 'TETRIS!',
+  // etc.
+}
+
 export class Renderer {
   private readonly gameBoard: HTMLElement;
   private readonly nextPiece: HTMLElement;
   private readonly scoreboard: HTMLElement;
   private readonly instructions: HTMLElement;
+  private readonly gameMessage: HTMLElement;
   private linesToClear: Set<number>;
 
   constructor(
     gameBoard: HTMLElement,
     nextPiece: HTMLElement,
     scoreboard: HTMLElement,
-    instructions: HTMLElement
+    instructions: HTMLElement,
+    gameMessage: HTMLElement
   ) {
     this.gameBoard = gameBoard;
     this.nextPiece = nextPiece;
     this.scoreboard = scoreboard;
     this.instructions = instructions;
+    this.gameMessage = gameMessage;
     this.linesToClear = new Set();
   }
 
@@ -42,6 +55,7 @@ export class Renderer {
     this.renderNext(next);
     this.renderScore(gameState);
     this.renderInstructions();
+    this.renderGameMessage(gameState);
   }
 
   private renderBoard(
@@ -89,12 +103,6 @@ export class Renderer {
 
     out += '<!'.padEnd(board.getGrid()[0].length * 3 + 2, '=') + '!>\n';
 
-    if (gameState.isGameOver()) {
-      out += '\nGAME OVER!\nPress R to play again';
-    } else if (gameState.getIsPaused()) {
-      out += '\nPAUSED';
-    }
-
     this.gameBoard.textContent = out;
   }
 
@@ -115,5 +123,25 @@ export class Renderer {
 
   private renderInstructions(): void {
     this.instructions.textContent = `INSTRUCTIONS:\n7/←: LEFT   9/→: RIGHT\n8/↑: ROTATE\n4/↓: SOFT DROP\n5/SPACE: HARD DROP\nP: PAUSE    R: RESTART`;
+  }
+
+  private renderGameMessage(gameState: GameState): void {
+    let message: GameMessage = GameMessage.NONE;
+    
+    if (gameState.isGameOver()) {
+      message = GameMessage.GAME_OVER;
+    } else if (gameState.getIsPaused()) {
+      message = GameMessage.PAUSED;
+    }
+    
+    this.gameMessage.textContent = message;
+  }
+
+  /**
+   * Set a custom message to display in the game message area
+   * @param message The message to display, or empty string to clear
+   */
+  public setCustomMessage(message: string): void {
+    this.gameMessage.textContent = message;
   }
 }

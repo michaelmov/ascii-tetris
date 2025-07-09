@@ -7,7 +7,8 @@ const renderer = new Renderer(
   document.getElementById('game-board') as HTMLElement,
   document.getElementById('next-piece') as HTMLElement,
   document.getElementById('scoreboard') as HTMLElement,
-  document.getElementById('instructions') as HTMLElement
+  document.getElementById('instructions') as HTMLElement,
+  document.getElementById('game-message') as HTMLElement
 );
 
 // Create the game instance
