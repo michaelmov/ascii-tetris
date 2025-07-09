@@ -99,6 +99,7 @@ body {
   body {
     padding: 20px;
     justify-content: flex-start;
+    font-size: 20px;
   }
 
   #start-screen {

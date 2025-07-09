@@ -10,7 +10,7 @@ interface Position {
 enum GameMessage {
   NONE = '',
   PAUSED = 'PAUSED',
-  GAME_OVER = 'GAME OVER!\n\nPress R to play again',
+  GAME_OVER = 'GAME OVER!<br>Press R to play again',
   // Future messages can be easily added here:
   // LEVEL_UP = 'LEVEL UP!',
   // TETRIS = 'TETRIS!',
@@ -134,7 +134,7 @@ export class Renderer {
       message = GameMessage.PAUSED;
     }
     
-    this.gameMessage.textContent = message;
+    this.gameMessage.innerHTML = message;
   }
 
   /**
@@ -142,6 +142,6 @@ export class Renderer {
    * @param message The message to display, or empty string to clear
    */
   public setCustomMessage(message: string): void {
-    this.gameMessage.textContent = message;
+    this.gameMessage.innerHTML = message;
   }
 }
