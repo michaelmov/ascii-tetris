@@ -10,7 +10,7 @@ interface Position {
 enum GameMessage {
   NONE = '',
   PAUSED = 'PAUSED',
-  GAME_OVER = 'GAME OVER!<br>Press R to play again',
+  GAME_OVER = 'GAME OVER!<p class="blink-animation hide-on-mobile">Press R to play again</p>',
   // Future messages can be easily added here:
   // LEVEL_UP = 'LEVEL UP!',
   // TETRIS = 'TETRIS!',

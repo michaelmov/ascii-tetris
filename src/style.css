@@ -54,6 +54,10 @@ body {
   }
 }
 
+.blink-animation {
+  animation: blink 1s infinite;
+}
+
 .start-message,
 .start-message-mobile {
   animation: blink 1s infinite;
@@ -100,6 +104,10 @@ body {
     padding: 20px;
     justify-content: flex-start;
     font-size: 20px;
+  }
+
+  .hide-on-mobile {
+    display: none;
   }
 
   #start-screen {
