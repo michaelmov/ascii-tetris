@@ -7,12 +7,12 @@ interface Position {
   col: number;
 }
 
-enum GameMessage {
+export enum GameMessage {
   NONE = '',
   PAUSED = 'PAUSED',
   GAME_OVER = 'GAME OVER!<p class="blink-animation hide-on-mobile">Press R to play again</p>',
+  LEVEL_UP = '<p class="blink-animation">LEVEL UP!</p>',
   // Future messages can be easily added here:
-  // LEVEL_UP = 'LEVEL UP!',
   // TETRIS = 'TETRIS!',
   // etc.
 }
@@ -24,6 +24,8 @@ export class Renderer {
   private readonly instructions: HTMLElement;
   private readonly gameMessage: HTMLElement;
   private linesToClear: Set<number>;
+  private customMessage: string;
+  private customMessageTimeout: number | null;
 
   constructor(
     gameBoard: HTMLElement,
@@ -38,6 +40,8 @@ export class Renderer {
     this.instructions = instructions;
     this.gameMessage = gameMessage;
     this.linesToClear = new Set();
+    this.customMessage = '';
+    this.customMessageTimeout = null;
   }
 
   public setLinesToClear(lines: number[]): void {
@@ -126,6 +130,12 @@ export class Renderer {
   }
 
   private renderGameMessage(gameState: GameState): void {
+    // If there's a custom message, show it instead of the default game messages
+    if (this.customMessage) {
+      this.gameMessage.innerHTML = this.customMessage;
+      return;
+    }
+    
     let message: GameMessage = GameMessage.NONE;
     
     if (gameState.isGameOver()) {
@@ -140,8 +150,23 @@ export class Renderer {
   /**
    * Set a custom message to display in the game message area
    * @param message The message to display, or empty string to clear
+   * @param duration Optional duration in milliseconds to auto-clear the message
    */
-  public setCustomMessage(message: string): void {
-    this.gameMessage.innerHTML = message;
+  public setCustomMessage(message: string, duration?: number): void {
+    // Clear any existing timeout
+    if (this.customMessageTimeout) {
+      window.clearTimeout(this.customMessageTimeout);
+      this.customMessageTimeout = null;
+    }
+    
+    this.customMessage = message;
+    
+    // If duration is provided, set up auto-clear
+    if (duration && duration > 0) {
+      this.customMessageTimeout = window.setTimeout(() => {
+        this.customMessage = '';
+        this.customMessageTimeout = null;
+      }, duration);
+    }
   }
 }

@@ -2,7 +2,7 @@ import { Board } from './Board';
 import { GameState } from './GameState';
 import { InputHandler } from './InputHandler';
 import { Piece } from './Piece';
-import { Renderer } from './Renderer';
+import { GameMessage, Renderer } from './Renderer';
 
 interface Position {
   row: number;
@@ -12,7 +12,6 @@ interface Position {
 export class Game {
   private readonly ROWS: number;
   private readonly COLS: number;
-  private readonly TICK_MS: number;
 
   private board: Board;
   private gameState: GameState;
@@ -24,11 +23,11 @@ export class Game {
   private position: Position | null;
   private isStarted: boolean;
   private tickInterval: number | null;
+  private currentLevel: number;
 
   constructor(renderer: Renderer) {
     this.ROWS = 25;
     this.COLS = 10;
-    this.TICK_MS = 500;
 
     this.board = new Board(this.ROWS, this.COLS);
     this.gameState = new GameState();
@@ -40,6 +39,26 @@ export class Game {
     this.position = null;
     this.isStarted = false;
     this.tickInterval = null;
+    this.currentLevel = 1;
+  }
+
+  /**
+   * Calculate tick speed based on current level using classic Tetris progression
+   * Level 1: 800ms, Level 2: 717ms, Level 3: 633ms, etc.
+   * Formula: max(50, 800 - (level - 1) * 83)
+   */
+  private getTickSpeed(): number {
+    return Math.max(50, 800 - (this.currentLevel - 1) * 83);
+  }
+
+  /**
+   * Update the tick interval with the current speed
+   */
+  private updateTickSpeed(): void {
+    if (this.tickInterval) {
+      window.clearInterval(this.tickInterval);
+      this.tickInterval = window.setInterval(() => this.tick(), this.getTickSpeed());
+    }
   }
 
   public start(): void {
@@ -54,7 +73,7 @@ export class Game {
 
       this.isStarted = true;
       this.spawnPiece();
-      this.tickInterval = window.setInterval(() => this.tick(), this.TICK_MS);
+      this.tickInterval = window.setInterval(() => this.tick(), this.getTickSpeed());
     }
   }
 
@@ -109,6 +128,17 @@ export class Game {
         setTimeout(() => {
           const clearedLines = this.board.clearLines();
           this.gameState.updateScore(clearedLines);
+          
+          // Check if level changed and update speed accordingly
+          const newLevel = this.gameState.getLevel();
+          if (newLevel !== this.currentLevel) {
+            this.currentLevel = newLevel;
+            this.updateTickSpeed();
+            
+            // Show level up message briefly
+            this.renderer.setCustomMessage(GameMessage.LEVEL_UP, 2000);
+          }
+          
           this.renderer.setLinesToClear([]);
           this.spawnPiece();
           this.render();
@@ -193,9 +223,10 @@ export class Game {
     this.current = null;
     this.next = null;
     this.position = null;
+    this.currentLevel = 1;
     this.spawnPiece();
     // Start new interval
-    this.tickInterval = window.setInterval(() => this.tick(), this.TICK_MS);
+    this.tickInterval = window.setInterval(() => this.tick(), this.getTickSpeed());
     this.render();
   }
 
