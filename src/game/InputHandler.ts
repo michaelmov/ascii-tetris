@@ -74,6 +74,12 @@ export class InputHandler {
     document.addEventListener(
       'touchstart',
       (e: TouchEvent) => {
+        // Don't handle touch events on links
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'A' || target.closest('a')) {
+          return;
+        }
+        
         if (!this.game.getIsStarted() || this.game.getGameState().isGameOver())
           return;
 
@@ -86,6 +92,12 @@ export class InputHandler {
     document.addEventListener(
       'touchend',
       (e: TouchEvent) => {
+        // Don't handle touch events on links
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'A' || target.closest('a')) {
+          return;
+        }
+        
         if (
           !this.game.getIsStarted() ||
           !this.touchStartX ||
@@ -151,6 +163,12 @@ export class InputHandler {
     document.addEventListener(
       'touchmove',
       (e: TouchEvent) => {
+        // Don't handle touch events on links
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'A' || target.closest('a')) {
+          return;
+        }
+        
         if (!this.game.getIsStarted() || this.game.getGameState().isGameOver())
           return;
       },

@@ -38,6 +38,12 @@ window.onload = (): void => {
 
     // Start game when clicking/tapping anywhere on the document
     const startGame = (event: Event) => {
+      // Don't prevent default if clicking on a link or within a link
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'A' || target.closest('a')) {
+        return; // Allow link clicks to work normally
+      }
+      
       event.preventDefault();
       if (!gameStarted) {
         gameStarted = true;
