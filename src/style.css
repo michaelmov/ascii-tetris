@@ -25,6 +25,10 @@ body {
   font-size: 24px;
 }
 
+a {
+  color: var(--text-color);
+}
+
 #start-screen {
   text-align: center;
   white-space: pre;
@@ -174,6 +178,12 @@ body {
   .mobile-only {
     display: block;
   }
+
+  .game-author-credits {
+    position: fixed;
+    top: 10px;
+    bottom: auto;
+  }
 }
 
 #pause-button {
@@ -196,5 +206,15 @@ body {
   color: var(--background-color);
 }
 
-@media (max-width: 768px) {
+.game-author-credits {
+  font-weight: normal;
+  font-size: 14px;
+  color: var(--text-color);
+  text-align: center;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
