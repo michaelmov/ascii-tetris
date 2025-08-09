@@ -152,6 +152,8 @@ export class Game {
   }
 
   public move(dx: number): void {
+    if (this.gameState.getIsPaused()) return;
+    
     if (
       this.board.isValidMove(
         this.current!.getShape(),
@@ -165,6 +167,8 @@ export class Game {
   }
 
   public moveDown(): void {
+    if (this.gameState.getIsPaused()) return;
+    
     if (
       this.board.isValidMove(
         this.current!.getShape(),
@@ -178,6 +182,8 @@ export class Game {
   }
 
   public drop(): void {
+    if (this.gameState.getIsPaused()) return;
+    
     while (
       this.board.isValidMove(
         this.current!.getShape(),
@@ -191,6 +197,8 @@ export class Game {
   }
 
   public rotatePiece(): void {
+    if (this.gameState.getIsPaused()) return;
+    
     this.current!.rotate();
     if (
       !this.board.isValidMove(
