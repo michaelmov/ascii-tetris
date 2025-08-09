@@ -2,6 +2,7 @@ import { Board } from './Board';
 import { GameState } from './GameState';
 import { InputHandler } from './InputHandler';
 import { Piece } from './Piece';
+import { Sound } from './Sound';
 import { GameMessage, Renderer } from './Renderer';
 
 interface Position {
@@ -71,6 +72,9 @@ export class Game {
         tetrisContainer.style.display = 'flex';
       }
 
+      // Initialize sound on user gesture start
+      Sound.init();
+
       this.isStarted = true;
       this.spawnPiece();
       this.tickInterval = window.setInterval(() => this.tick(), this.getTickSpeed());
@@ -128,6 +132,8 @@ export class Game {
         setTimeout(() => {
           const clearedLines = this.board.clearLines();
           this.gameState.updateScore(clearedLines);
+          // Play retro beep(s) for line clear
+          Sound.playLineClear(clearedLines);
           
           // Check if level changed and update speed accordingly
           const newLevel = this.gameState.getLevel();
