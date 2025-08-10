@@ -25,6 +25,7 @@ export class Game {
   private isStarted: boolean;
   private tickInterval: number | null;
   private currentLevel: number;
+  private isClearingLines: boolean;
 
   constructor(renderer: Renderer) {
     this.ROWS = 25;
@@ -41,6 +42,7 @@ export class Game {
     this.isStarted = false;
     this.tickInterval = null;
     this.currentLevel = 1;
+    this.isClearingLines = false;
   }
 
   /**
@@ -104,6 +106,12 @@ export class Game {
   private tick(): void {
     if (this.gameState.isGameOver() || this.gameState.getIsPaused()) return;
 
+    // If a line clear animation is in progress, only re-render to animate and skip logic
+    if (this.isClearingLines) {
+      this.render();
+      return;
+    }
+
     if (
       this.board.isValidMove(
         this.current!.getShape(),
@@ -124,6 +132,7 @@ export class Game {
       }
 
       if (linesToClear.length > 0) {
+        this.isClearingLines = true;
         // Start the animation
         this.renderer.setLinesToClear(linesToClear);
         this.render();
@@ -146,6 +155,7 @@ export class Game {
           }
           
           this.renderer.setLinesToClear([]);
+          this.isClearingLines = false;
           this.spawnPiece();
           this.render();
         }, 300);
@@ -238,6 +248,7 @@ export class Game {
     this.next = null;
     this.position = null;
     this.currentLevel = 1;
+    this.isClearingLines = false;
     this.spawnPiece();
     // Start new interval
     this.tickInterval = window.setInterval(() => this.tick(), this.getTickSpeed());
