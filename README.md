@@ -2,6 +2,8 @@
 
 A modern take on the classic Tetris game, implemented in ASCII art. This project is inspired by the original Tetris game created by Alexey Pajitnov in 1984, which has become one of the most iconic and beloved video games of all time.
 
+**Note: This project was built primarily as an exercise in AI-assisted development using Cursor, exploring effective prompting techniques and instruction-giving to LLMs for software development.**
+
 [Play now!](https://michaelmov.github.io/ascii-tetris/)
 
 This implementation is built using vanilla web technologies:
