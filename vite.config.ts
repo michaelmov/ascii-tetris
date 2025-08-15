@@ -1,17 +1,25 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig(({ mode }) => {
-  const baseUrl = mode === 'production' 
-    ? 'https://michaelmov.github.io/ascii-tetris'
-    : 'http://localhost:5173';
-
   return {
     root: 'src',
     base: './',
     plugins: [
       {
         name: 'html-transform',
-        transformIndexHtml(html) {
+        transformIndexHtml(html, context) {
+          let baseUrl: string;
+          
+          if (mode === 'production') {
+            baseUrl = 'https://michaelmov.github.io/ascii-tetris';
+          } else {
+            // In development, use the actual server configuration
+            const server = context.server;
+            const port = server?.config.server.port || 5173;
+            const host = server?.config.server.host || 'localhost';
+            baseUrl = `http://${host === true ? 'localhost' : host}:${port}`;
+          }
+          
           return html
             .replace(/%BASE_URL%/g, baseUrl + '/')
             .replace(/%IMAGE_URL%/g, `${baseUrl}/images/ascii-tetris-min.png`);
@@ -29,6 +37,10 @@ export default defineConfig(({ mode }) => {
     },
     css: {
       devSourcemap: true,
+    },
+    server: {
+      port: 5173, // Default port, but Vite will find next available if occupied
+      strictPort: false, // Allow Vite to use different port if 5173 is busy
     },
   };
 });
