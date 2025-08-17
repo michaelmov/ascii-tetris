@@ -10,7 +10,7 @@ This implementation is built using vanilla web technologies:
 
 - **HTML5** for the game structure
 - **CSS3** for styling and animations
-- **JavaScript** (ES6+) for game logic and mechanics
+- **TypeScript** for game logic and mechanics
 
 The game is designed to be lightweight and run smoothly in any modern web browser without requiring any external dependencies or frameworks. The ASCII art rendering is achieved through careful manipulation of the DOM and CSS styling, creating a nostalgic terminal-like experience while maintaining modern web standards.
 
